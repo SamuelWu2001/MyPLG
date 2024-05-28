@@ -12,8 +12,8 @@ async function bootstrap() {
 function setupSwagger(app: INestApplication) {
   const builder = new DocumentBuilder();
   const config = builder
-    .setTitle('TodoList')
-    .setDescription('This is a basic Swagger Document')
+    .setTitle('MyPLG')
+    .setDescription('This is a Swagger Document for MyPLG app')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);
