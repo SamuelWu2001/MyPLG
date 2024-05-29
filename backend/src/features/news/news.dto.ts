@@ -12,7 +12,7 @@ export class CreateNewsDto {
 
     @IsString()
     @IsOptional()
-    photo?: string;
+    imgUrl?: string;
 
     @IsString()
     @IsNotEmpty()

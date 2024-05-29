@@ -10,7 +10,7 @@ export class News extends Document {
     content: string;
 
     @Prop()
-    photo: string;
+    imgUrl: string;
 
     @Prop()
     publishedAt: string;
