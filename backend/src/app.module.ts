@@ -9,6 +9,7 @@ import { MongoConfigFactory } from './config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import * as dotenv from 'dotenv';
 import { join } from 'path';
+import { CrawlerModule } from './crawler/crawler.module';
 
 
 dotenv.config({ path: 'development.env'});
@@ -32,6 +33,7 @@ dotenv.config({ path: 'development.env'});
       })
     }),
     NewsModule,
+    CrawlerModule,
   ],
   controllers: [AppController],
   providers: [
