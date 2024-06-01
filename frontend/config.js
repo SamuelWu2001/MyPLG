@@ -1,7 +1,7 @@
 // config.js
 const ENV = {
     development: {
-      API_URL: 'https://b874-223-139-28-87.ngrok-free.app/',
+      API_URL: 'https://9500-223-139-28-87.ngrok-free.app',
     }
 };
   

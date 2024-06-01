@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 
-const NewsCard = ({ title, time, imageUrl }) => {
+const NewsCard = ({ title, time, imageUrl, tag }) => {
   return (
     <View style={styles.card}>
       <Image source={{ uri: imageUrl }} style={styles.image} />
       <View style={styles.textContainer}>
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.time}>{time}</Text>
+        <Text style={styles.tag}>{tag}</Text>
       </View>
     </View>
   );
@@ -40,6 +41,16 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 14,
     color: '#888',
+  },
+  tag: {
+    position: 'absolute',
+    bottom: 8,
+    right: 15,
+    backgroundColor: '#6C6C6C',
+    color: '#fff',
+    paddingVertical: 3,
+    paddingHorizontal: 5,
+    fontSize: 12,
   },
 });
 
