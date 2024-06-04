@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { News } from './news.model';
 import { Model } from 'mongoose';
@@ -15,6 +15,11 @@ export class NewsService {
 
     async findAll(): Promise<News[]> {
         return this.newsModel.find().exec();
+    }
+
+    async existsByTitle(newsTitle: string): Promise<boolean> {
+        const news = await this.newsModel.findOne({ title: newsTitle }).exec();
+        return !!news;
     }
 
 }

@@ -14,6 +14,9 @@ export class News extends Document {
 
     @Prop()
     publishedAt: string;
+
+    @Prop()
+    tag: string;
 }
 
 export const NewsSchema = SchemaFactory.createForClass(News);

@@ -21,7 +21,7 @@ export class NewsController {
     @ApiOperation({ summary: 'Create news' })
     @ApiResponse({ status: 201, description: 'The news has been successfully created.' })
     @ApiConsumes('multipart/form-data')
-    @UseInterceptors(FileInterceptor('imgUrl', MulterConfig))
+    @UseInterceptors(FileInterceptor('photo', MulterConfig))
     @ApiBody({
         schema: {
             type: 'object',
@@ -29,15 +29,16 @@ export class NewsController {
                 title: { type: 'string', description: 'The title of the news', example: 'Playoff is comming' },
                 content: { type: 'string', description: 'The content of the news', example: 'Welcome to PLG Playoff, in the 2023-24 season, there are four teams ...' },
                 publishedAt: { type: 'string', description: 'The time when the news was published', example: '2024-05-23T10:00:00.000Z' },
-                imgUrl: { type: 'file', format: 'binary', description: 'The image file' },
+                tag: {type: 'string', description: 'The type of news', example: '#最新消息'},
+                photo: { type: 'file', format: 'binary', description: 'The image file' },
             }
         }
     })
     @Post()
-    async create(@UploadedFile() imgUrl: Express.Multer.File, @Body() createNewsDto: CreateNewsDto): Promise<News> { 
+    async create(@UploadedFile() photo: Express.Multer.File, @Body() createNewsDto: CreateNewsDto): Promise<News> { 
         const newCreateNewsDto = {
             ...createNewsDto,
-            imgUrl: imgUrl ? imgUrl.path : './uploads/default.png'
+            imgUrl: photo ? photo.path : './uploads/default.png'
         };
         return this.newsService.create(newCreateNewsDto);
     }

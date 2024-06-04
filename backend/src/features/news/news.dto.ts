@@ -17,4 +17,8 @@ export class CreateNewsDto {
     @IsString()
     @IsNotEmpty()
     publishedAt: string;
+    
+    @IsString()
+    @IsNotEmpty()
+    tag: string;
 }
