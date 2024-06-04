@@ -2,15 +2,18 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import getEnvVars from '../../../config';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 
 const { API_URL } = getEnvVars(process.env.NODE_ENV);
 
-const NewsArticle = ({ article, handlePress }) => {
+const NewsArticle = ({ route }) => {
+    const navigation = useNavigation();
+    const article = route.params.news;
     return (
         <View style={styles.outerContainer}>
             <View style={styles.topBar}>
-                <TouchableOpacity onPress={() => handlePress(null)}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Ionicons name="arrow-back" size={30} style={styles.backButton}/>
                 </TouchableOpacity>
                 <Text style={styles.barTitle}>{article.tag.slice(2)}</Text>
