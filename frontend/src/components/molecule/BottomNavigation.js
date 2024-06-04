@@ -17,7 +17,7 @@ export default function BottomTabBar() {
         headerShown: false,
         tabBarStyle: {
           paddingTop:5,
-          height: 85,
+          height: 80,
         },
       }}
     >
