@@ -87,7 +87,7 @@ export class CrawlerService {
                 standingsDto.againstBraves = teamRankData[12];
                 standingsDto.againstSteelers = teamRankData[13];
                 // update new standings into database
-                this.standingsService.updateStandings(index.toString(), standingsDto);
+                this.standingsService.updateStandings(standingsDto);
             })
         } catch (error) {
             console.error('Error occurred while crawling standings data:', error);

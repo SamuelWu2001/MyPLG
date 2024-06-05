@@ -13,6 +13,6 @@ export class PlayersService {
             { playerName: updatePlayerDto.playerName, team: updatePlayerDto.team, jerseyNumber: updatePlayerDto.jerseyNumber }, 
             updatePlayerDto,
             { new: true, upsert: true }
-        )
+        ).exec();
     }
 }

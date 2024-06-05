@@ -8,10 +8,10 @@ import { UpdateStandingsDto } from './standings.dto';
 export class StandingsService {
     constructor(@InjectModel(Standings.name) private standingsModel: Model<Standings>) {}
 
-    async updateStandings(index: string, updateStandingsDto: UpdateStandingsDto): Promise<Standings> {
-        return this.standingsModel.findByIdAndUpdate(
-            index,
-            { _id: index, ...updateStandingsDto},
+    async updateStandings(updateStandingsDto: UpdateStandingsDto): Promise<Standings> {
+        return this.standingsModel.findOneAndUpdate(
+            { team: updateStandingsDto.team },
+            updateStandingsDto,
             { new: true,  upsert: true }
         ).exec();
     }

@@ -1,11 +1,8 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-@Schema({ _id: false })
+@Schema()
 export class Standings extends Document {
-    @Prop()
-    _id: string;
-
     @Prop({ required: true })
     rank: number;
   
