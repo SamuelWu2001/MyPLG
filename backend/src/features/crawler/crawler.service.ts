@@ -7,14 +7,48 @@ import * as cheerio from 'cheerio';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateNewsDto } from '../news/news.dto';
-
+import { StandingsService } from '../standings/standings.service';
+import { UpdateStandingsDto } from '../standings/standings.dto';
 
 @Injectable()
 export class CrawlerService {
     constructor(
         private readonly httpService: HttpService,
-        private readonly newsService: NewsService
+        private readonly newsService: NewsService,
+        private readonly standingsService: StandingsService
     ) {}
+
+    @Cron(CronExpression.EVERY_DAY_AT_10AM)
+    async fetchStandings() {
+        try {
+            const response = await firstValueFrom(this.httpService.get(`${process.env.PLG_URL}/standings`));
+            const $ = cheerio.load(response.data);
+            const rankingData = $('.team_ranking').find('tbody');
+            rankingData.children().map(async (index, element) => {
+                const teamRankData = $(element).text().trim().split('\n').map(item => item.trim()).filter(item => item);
+                const standingsDto = new UpdateStandingsDto();
+                // load data into standingsDto
+                standingsDto.rank = parseInt(teamRankData[0], 10);
+                standingsDto.team = teamRankData[1];
+                standingsDto.gamesPlayed = parseInt(teamRankData[2], 10);
+                standingsDto.win = parseInt(teamRankData[3], 10);
+                standingsDto.loss = parseInt(teamRankData[4], 10);
+                standingsDto.winRate = teamRankData[5];
+                standingsDto.gamesBehind = parseInt(teamRankData[6], 10);
+                standingsDto.winStreak = teamRankData[7];
+                standingsDto.againstPilots = teamRankData[8];
+                standingsDto.againstDreamers = teamRankData[9];
+                standingsDto.againstKings = teamRankData[10];
+                standingsDto.againstLioneers = teamRankData[11];
+                standingsDto.againstBraves = teamRankData[12];
+                standingsDto.againstSteelers = teamRankData[13];
+                // update new standings into database
+                this.standingsService.updateStandings(index.toString(), standingsDto);
+            })
+        } catch (error) {
+            console.error('Error occurred while crawling standings data:', error);
+        }
+    }
 
     @Cron(CronExpression.EVERY_DAY_AT_10AM)
     async fetchNews() {
