@@ -4,12 +4,16 @@ import { CrawlerService } from './crawler.service';
 import { HttpModule } from '@nestjs/axios';
 import { ScheduleModule } from '@nestjs/schedule';
 import { NewsModule } from '../news/news.module';
+import { StandingsModule } from '../standings/standings.module';
+import { PlayersModule } from '../players/players.module';
 
 @Module({
   imports: [
     HttpModule,
     ScheduleModule.forRoot(),
-    NewsModule
+    NewsModule,
+    StandingsModule,
+    PlayersModule
   ],
   controllers: [CrawlerController],
   providers: [CrawlerService]

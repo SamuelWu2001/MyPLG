@@ -10,6 +10,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import * as dotenv from 'dotenv';
 import { join } from 'path';
 import { CrawlerModule } from './features/crawler/crawler.module';
+import { StandingsModule } from './features/standings/standings.module';
+import { PlayersModule } from './features/players/players.module';
 
 
 dotenv.config({ path: 'development.env'});
@@ -34,6 +36,8 @@ dotenv.config({ path: 'development.env'});
     }),
     NewsModule,
     CrawlerModule,
+    StandingsModule,
+    PlayersModule,
   ],
   controllers: [AppController],
   providers: [
