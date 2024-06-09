@@ -47,7 +47,7 @@ const PlayerInfo = () => {
       } catch (error) {
         console.error('Error fetching player data:', error);
       }
-    }
+    };
 
     fetchPlayerData();
   }, [])
@@ -67,7 +67,7 @@ const PlayerInfo = () => {
         <Text style={styles.barTitle}> 球員數據 </Text>
         <View style={styles.rightSpace}/> 
       </View>
-      <SearchTable initialData={playerData} tableHead={tableHead} widthList={widthList} placeholder="搜尋球員姓名"/>
+      <SearchTable initialData={playerData} tableHead={tableHead} widthList={widthList} placeholder="搜尋球員姓名" searchIndex={0}/>
     </View>
     
   )
