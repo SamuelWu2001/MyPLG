@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
 import SortTable from './SortTable';
 
-const SearchTable = ({ initialData, tableHead, widthList, placeholder="" }) => {
+const SearchTable = ({ initialData, tableHead, widthList, placeholder="", searchIndex=0 }) => {
   const [tableData, setTableData] = useState(initialData);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -15,7 +15,7 @@ const SearchTable = ({ initialData, tableHead, widthList, placeholder="" }) => {
     if (query) {
       setTableData(
         initialData.filter((row) =>
-          row[0].includes(query)
+          row[searchIndex].includes(query)
         )
       );
     } else {
