@@ -10,7 +10,7 @@ import { CreateNewsDto } from '../news/news.dto';
 import { StandingsService } from '../standings/standings.service';
 import { UpdateStandingsDto } from '../standings/standings.dto';
 import { PlayersService } from '../players/players.service';
-import { UpdatePlayerDto } from '../players/players.dto';
+import { UpdatePlayerDto, PlayerProfileDto, PlayerStatisticsDto } from '../players/players.dto';
 
 
 @Injectable()
@@ -30,31 +30,75 @@ export class CrawlerService {
             const playerData = $('table,#main-table').find('tbody');
             playerData.children().map(async (_, element)=> {
                 const playerInfoData = $(element).text().trim().split('\n').map(item => item.trim()).filter(item => item);
+                const profileURL = $(element).find('a').attr('href')
+                const profileResponse = await firstValueFrom(this.httpService.get(`${process.env.PLG_URL}${profileURL}`));
+                const profile = cheerio.load(profileResponse.data);
+                const playerProfileData = profile('#section_player');
+                const playerProfile = playerProfileData.find('.mt-md-3').text().trim().split('\n')
+                    .map(item => item.trim())
+                    .filter(item => item)
+                    .map(item => {
+                      const parts = item.split('：');
+                      return parts.length === 2 ? parts[1].trim() : ''; 
+                    });
+
+                const education: string[] = [];
+                const experience: string[] = [];
+                let status = 0;
+                playerProfileData.find('.py-0').text().trim().split('\n').map(item => item.trim())
+                .filter(item => item).forEach(item => {
+                    if (item === '學歷') {
+                        status = 1;
+                    } else if (item === '經歷') {
+                        status = 2;
+                    } else if (status === 1) {
+                        education.push(item);
+                    } else if (status === 2) {
+                        experience.push(item);
+                    }
+                })
                 const playerDto = new UpdatePlayerDto();
-                playerDto.playerName = playerInfoData[0];
-                playerDto.jerseyNumber = playerInfoData[1];
-                playerDto.team = playerInfoData[2];
-                playerDto.gamesPlayed = parseFloat(playerInfoData[3]);
-                playerDto.timePlayed = playerInfoData[4];
-                playerDto.twoPointersMade = parseFloat(playerInfoData[5]);
-                playerDto.twoPointersAttempted = parseFloat(playerInfoData[6]);
-                playerDto.twoPointPercentage = parseFloat(playerInfoData[7]);
-                playerDto.threePointersMade = parseFloat(playerInfoData[8]);
-                playerDto.threePointersAttempted = parseFloat(playerInfoData[9]);
-                playerDto.threePointPercentage = parseFloat(playerInfoData[10]);
-                playerDto.freeThrowsMade = parseFloat(playerInfoData[11]);
-                playerDto.freeThrowsAttempted = parseFloat(playerInfoData[12]);
-                playerDto.freeThrowPercentage = parseFloat(playerInfoData[13]);
-                playerDto.points = parseFloat(playerInfoData[14]);
-                playerDto.offensiveRebounds = parseFloat(playerInfoData[15]);
-                playerDto.defensiveRebounds = parseFloat(playerInfoData[16]);
-                playerDto.totalRebounds = parseFloat(playerInfoData[17]);
-                playerDto.assists = parseFloat(playerInfoData[18]);
-                playerDto.steals = parseFloat(playerInfoData[19]);
-                playerDto.blocks = parseFloat(playerInfoData[20]);
-                playerDto.turnovers = parseFloat(playerInfoData[21]);
-                playerDto.fouls = parseFloat(playerInfoData[22]);
+                playerDto.profile = new PlayerProfileDto();
+                playerDto.statistics = new PlayerStatisticsDto()
                 
+                // profile data
+                playerDto.profile.playerName = playerInfoData[0];
+                playerDto.profile.playerName_EN = playerProfileData.find('.worker_black.fs20').text();
+                playerDto.profile.jerseyNumber = parseFloat(playerInfoData[1]);
+                playerDto.profile.team = playerInfoData[2];
+                playerDto.profile.nickName = playerProfile[0];
+                playerDto.profile.tenure = playerProfile[1];
+                playerDto.profile.height = playerProfile[2];
+                playerDto.profile.weight = playerProfile[3];
+                playerDto.profile.birthDate = playerProfile[4];
+                playerDto.profile.birthPlace = playerProfile[5];
+                playerDto.profile.identity = playerProfile[6];
+                playerDto.profile.education = education;
+                playerDto.profile.experience = experience;
+                playerDto.profile.awards = playerProfileData.find('.pl-3.py-3').text().trim().split('\n').map(item => item.trim()).filter(item => item);
+                
+                // statistics data
+                playerDto.statistics.gamesPlayed = parseFloat(playerInfoData[3]);
+                playerDto.statistics.timePlayed = playerInfoData[4];
+                playerDto.statistics.twoPointersMade = parseFloat(playerInfoData[5]);
+                playerDto.statistics.twoPointersAttempted = parseFloat(playerInfoData[6]);
+                playerDto.statistics.twoPointPercentage = parseFloat(playerInfoData[7]);
+                playerDto.statistics.threePointersMade = parseFloat(playerInfoData[8]);
+                playerDto.statistics.threePointersAttempted = parseFloat(playerInfoData[9]);
+                playerDto.statistics.threePointPercentage = parseFloat(playerInfoData[10]);
+                playerDto.statistics.freeThrowsMade = parseFloat(playerInfoData[11]);
+                playerDto.statistics.freeThrowsAttempted = parseFloat(playerInfoData[12]);
+                playerDto.statistics.freeThrowPercentage = parseFloat(playerInfoData[13]);
+                playerDto.statistics.points = parseFloat(playerInfoData[14]);
+                playerDto.statistics.offensiveRebounds = parseFloat(playerInfoData[15]);
+                playerDto.statistics.defensiveRebounds = parseFloat(playerInfoData[16]);
+                playerDto.statistics.totalRebounds = parseFloat(playerInfoData[17]);
+                playerDto.statistics.assists = parseFloat(playerInfoData[18]);
+                playerDto.statistics.steals = parseFloat(playerInfoData[19]);
+                playerDto.statistics.blocks = parseFloat(playerInfoData[20]);
+                playerDto.statistics.turnovers = parseFloat(playerInfoData[21]);
+                playerDto.statistics.fouls = parseFloat(playerInfoData[22]);
+
                 this.playersService.updatePlayerInfo(playerDto);
             })
         } catch (error) {

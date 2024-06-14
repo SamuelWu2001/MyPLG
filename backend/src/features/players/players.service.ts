@@ -10,7 +10,11 @@ export class PlayersService {
     
     async updatePlayerInfo( updatePlayerDto: UpdatePlayerDto) {
         return this.playersModel.findOneAndUpdate(
-            { playerName: updatePlayerDto.playerName, team: updatePlayerDto.team, jerseyNumber: updatePlayerDto.jerseyNumber }, 
+            { 
+                'profile.playerName': updatePlayerDto.profile.playerName, 
+                'profile.team': updatePlayerDto.profile.team, 
+                'profile.jerseyNumber': updatePlayerDto.profile.jerseyNumber
+            }, 
             updatePlayerDto,
             { new: true, upsert: true }
         ).exec();

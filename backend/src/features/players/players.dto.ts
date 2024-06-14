@@ -1,18 +1,7 @@
-import { IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, IsObject, IsArray, ValidateNested } from "class-validator";
+import { Type } from 'class-transformer';
 
-export class UpdatePlayerDto {
-    @IsString()
-    @IsNotEmpty()
-    playerName: string;
-
-    @IsString()
-    @IsNotEmpty()
-    jerseyNumber: string;
-
-    @IsString()
-    @IsNotEmpty()
-    team: string;
-
+export class PlayerStatisticsDto {
     @IsNumber()
     @IsNotEmpty()
     gamesPlayed: number;
@@ -92,4 +81,69 @@ export class UpdatePlayerDto {
     @IsNumber()
     @IsNotEmpty()
     fouls: number;
+}
+  
+export class PlayerProfileDto {
+    @IsString()
+    @IsNotEmpty()
+    playerName: string;
+    
+    @IsString()
+    @IsNotEmpty()
+    playerName_EN: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    jerseyNumber: number;
+
+    @IsString()
+    @IsNotEmpty()
+    team: string;
+    
+    @IsString()
+    nickName?: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    tenure: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    height: string;
+
+    @IsNumber()
+    @IsNotEmpty()
+    weight: string;
+
+    @IsString()
+    birthDate?: string;
+
+    @IsString()
+    birthPlace?: string;
+
+    @IsString()
+    @IsNotEmpty()
+    identity: string;
+
+    @IsArray()
+    education?: string[];
+
+    @IsArray()
+    experience?: string[];
+
+    @IsArray()
+    awards?: string[];
+
+}
+
+export class UpdatePlayerDto {
+    @IsObject()
+    @ValidateNested()
+    @Type(() => PlayerStatisticsDto)
+    statistics: PlayerStatisticsDto;
+
+    @IsObject()
+    @ValidateNested()
+    @Type(() => PlayerProfileDto)
+    profile: PlayerProfileDto;
 }
