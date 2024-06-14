@@ -15,4 +15,8 @@ export class PlayersService {
             { new: true, upsert: true }
         ).exec();
     }
+
+    async findAll(): Promise<Player[]> {
+        return this.playersModel.find().exec();
+    }
 }

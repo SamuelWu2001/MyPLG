@@ -69,7 +69,7 @@ export class CrawlerService {
             const $ = cheerio.load(response.data);
             const rankingData = $('.team_ranking').find('tbody');
             rankingData.children().map(async (index, element) => {
-                const teamRankData = $(element).text().trim().split('\n').map(item => item.trim()).filter(item => item);
+                const teamRankData = $(element).text().trim().split(/\n|(?=P)/).map(item => item.trim()).filter(item => item);
                 const standingsDto = new UpdateStandingsDto();
                 // load data into standingsDto
                 standingsDto.rank = parseInt(teamRankData[0], 10);
