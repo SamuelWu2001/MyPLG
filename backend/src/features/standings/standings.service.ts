@@ -16,5 +16,9 @@ export class StandingsService {
         ).exec();
     }
 
+    async findAll(): Promise<Standings[]> {
+        return this.standingsModel.find().exec();
+    } 
+
 
 }
