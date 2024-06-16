@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString, IsObject, IsArray, ValidateNested } from "class-validator";
+import { IsNotEmpty, IsOptional, IsNumber, IsString, IsObject, IsArray, ValidateNested } from "class-validator";
 import { Type } from 'class-transformer';
 
 export class PlayerStatisticsDto {
@@ -95,6 +95,10 @@ export class PlayerProfileDto {
     @IsNumber()
     @IsNotEmpty()
     jerseyNumber: number;
+
+    @IsString()
+    @IsOptional()
+    imgUrl?: string;
 
     @IsString()
     @IsNotEmpty()

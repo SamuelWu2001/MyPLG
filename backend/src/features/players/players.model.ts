@@ -74,6 +74,9 @@ export class PlayerProfile extends Document {
     
     @Prop({ required: true })
     jerseyNumber: number;
+
+    @Prop()
+    imgUrl: string;
     
     @Prop({ required: true })
     team: string;

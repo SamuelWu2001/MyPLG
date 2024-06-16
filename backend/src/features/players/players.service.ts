@@ -20,7 +20,19 @@ export class PlayersService {
         ).exec();
     }
 
-    async findAll(): Promise<Player[]> {
-        return this.playersModel.find().exec();
+    async getStatisticData(): Promise<Player[]> {
+        return this.playersModel.find().select({
+            'profile.playerName': 1,
+            'profile.jerseyNumber': 1,
+            'profile.team': 1,
+            'statistics': 1,
+        }).exec();
+    }
+
+    async getProfileData(playerName: string): Promise<Player[]> {
+        return this.playersModel
+        .find({ 'profile.playerName': playerName })
+        .select({'profile': 1,})
+        .exec();
     }
 }
