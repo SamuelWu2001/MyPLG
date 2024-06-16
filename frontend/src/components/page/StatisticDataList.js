@@ -19,7 +19,7 @@ const StatisticDataList = () => {
     const data = [
         { id: '1', title: '綜合排行', iconType: 'FontAwesome6', iconName: 'ranking-star', route: '' },
         { id: '2', title: '球隊戰績', iconType: 'Ionicons', iconName: 'stats-chart', route: 'Standings' },
-        { id: '3', title: '球員數據', iconType: 'Ionicons', iconName: 'person', route: 'PlayerInfo' },
+        { id: '3', title: '球員數據', iconType: 'Ionicons', iconName: 'person', route: 'Player' },
         { id: '4', title: '球隊數據', iconType: 'FontAwesome6', iconName: 'people-group', route: '' },
         { id: '5', title: '特殊表現', iconType: 'Ionicons', iconName: 'star', route: '' },
         { id: '6', title: 'Hot Zone', iconType: 'FontAwesome6', iconName: 'chart-pie', route: '' },

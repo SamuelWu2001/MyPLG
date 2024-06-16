@@ -8,7 +8,7 @@ import { Ionicons } from '@expo/vector-icons';
 
 const { API_URL } = getEnvVars(process.env.NODE_ENV);
 
-const PlayerInfo = () => {
+const PlayerStatistic = () => {
 
   const navigation = useNavigation(); 
 
@@ -17,31 +17,31 @@ const PlayerInfo = () => {
   useEffect(() => {
     const fetchPlayerData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/players`);
+        const response = await axios.get(`${API_URL}/players/statistic`);
         const initialData = response.data.map((item, _) => [
-          item.playerName, 
-          item.jerseyNumber, 
-          item.team, 
-          item.gamesPlayed,
-          item.timePlayed, 
-          item.twoPointersMade,
-          item.twoPointersAttempted,
-          item.twoPointPercentage,
-          item.threePointersMade,
-          item.threePointersAttempted,
-          item.threePointPercentage,
-          item.freeThrowsMade,
-          item.freeThrowsAttempted,
-          item.freeThrowPercentage,
-          item.points, 
-          item.offensiveRebounds,
-          item.defensiveRebounds,
-          item.totalRebounds,
-          item.assists,
-          item.steals,
-          item.blocks,
-          item.turnovers,
-          item.fouls
+          item.profile.playerName, 
+          item.profile.jerseyNumber, 
+          item.profile.team, 
+          item.statistics.gamesPlayed,
+          item.statistics.timePlayed, 
+          item.statistics.twoPointersMade,
+          item.statistics.twoPointersAttempted,
+          item.statistics.twoPointPercentage,
+          item.statistics.threePointersMade,
+          item.statistics.threePointersAttempted,
+          item.statistics.threePointPercentage,
+          item.statistics.freeThrowsMade,
+          item.statistics.freeThrowsAttempted,
+          item.statistics.freeThrowPercentage,
+          item.statistics.points, 
+          item.statistics.offensiveRebounds,
+          item.statistics.defensiveRebounds,
+          item.statistics.totalRebounds,
+          item.statistics.assists,
+          item.statistics.steals,
+          item.statistics.blocks,
+          item.statistics.turnovers,
+          item.statistics.fouls
         ]);
         setPlayerData(initialData);
       } catch (error) {
@@ -58,6 +58,10 @@ const PlayerInfo = () => {
   '三分％', '罰球命中', '罰球出手', '罰球％', '得分', '攻板', '防板', '籃板', '助攻', '抄截', '阻攻', '失誤', '犯規'];
   const widthList = [80, 45, 135, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80];
   
+  const getPlayerProfile = (playerName) => {
+    navigation.navigate('Profile', { playerName });
+  };
+
   return (
     <View style={styles.outerContainer}>
       <View style={styles.topBar}>
@@ -67,7 +71,7 @@ const PlayerInfo = () => {
         <Text style={styles.barTitle}> 球員數據 </Text>
         <View style={styles.rightSpace}/> 
       </View>
-      <SearchTable initialData={playerData} tableHead={tableHead} widthList={widthList} placeholder="搜尋球員姓名" searchIndex={0}/>
+      <SearchTable initialData={playerData} tableHead={tableHead} widthList={widthList} placeholder="搜尋球員姓名" searchIndex={0} seeDetail={getPlayerProfile}/>
     </View>
     
   )
@@ -101,4 +105,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-export default PlayerInfo;
+
+export default PlayerStatistic;
