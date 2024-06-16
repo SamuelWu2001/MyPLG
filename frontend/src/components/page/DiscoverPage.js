@@ -1,7 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack'
 import StatisticDataList from './StatisticDataList';
-import PlayerInfo from './PlayerInfo';
+import PlayerPage from './PlayerPage';
 import Standings from './Standings';
 
 
@@ -12,8 +12,8 @@ export default function DiscoverPage() {
       <DiscoverStack.Navigator screenOptions={{ headerShown: false }}>
         <DiscoverStack.Screen name="StatisticDataList" component={ StatisticDataList }/>
         <DiscoverStack.Screen
-          name="PlayerInfo"
-          component={ PlayerInfo }
+          name="Player"
+          component={ PlayerPage }
           options={{ gestureEnabled: true }}
         />
         <DiscoverStack.Screen
