@@ -57,6 +57,7 @@ export class CrawlerService {
                         experience.push(item);
                     }
                 })
+
                 const playerDto = new UpdatePlayerDto();
                 playerDto.profile = new PlayerProfileDto();
                 playerDto.statistics = new PlayerStatisticsDto()
@@ -77,6 +78,21 @@ export class CrawlerService {
                 playerDto.profile.experience = experience;
                 playerDto.profile.awards = playerProfileData.find('.pl-3.py-3').text().trim().split('\n').map(item => item.trim()).filter(item => item);
                 
+                // download image               
+                const imgUrl = `./uploads/players/${playerInfoData[0]}.jpg`
+                if (!fs.existsSync(imgUrl)) {
+                    try {
+                        const url = playerProfileData.find('.player_image').attr('style').match(/url\(['"]?([^'"]+)['"]?\)/);
+                        const playerImgUrl = `https:${url[1]}`;
+                        const playerImgResponse = await firstValueFrom(this.httpService.get(playerImgUrl, { responseType: 'stream', timeout: 10000 })); 
+                        const writer = fs.createWriteStream(imgUrl);
+                        playerImgResponse.data.pipe(writer);
+                    } catch (error) {
+                        console.log('Error', playerInfoData[0], error)
+                    }
+                }
+                playerDto.profile.imgUrl = `/uploads/players/${playerInfoData[0]}.jpg`;
+
                 // statistics data
                 playerDto.statistics.gamesPlayed = parseFloat(playerInfoData[3]);
                 playerDto.statistics.timePlayed = playerInfoData[4];
