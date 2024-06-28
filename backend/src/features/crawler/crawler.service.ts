@@ -7,8 +7,8 @@ import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { NewsService } from '../news/news.service';
 import { CreateNewsDto } from '../news/news.dto';
-import { StandingsService } from '../standings/standings.service';
-import { UpdateStandingsDto } from '../standings/standings.dto';
+import { TeamsService } from '../teams/teams.service';
+import { TeamDto, StandingsDto, TeamProfileDto, TeamIntroductionDto, PurchaseDto, FacilityDto } from '../teams/teams.dto';
 import { PlayersService } from '../players/players.service';
 import { UpdatePlayerDto, PlayerProfileDto, PlayerStatisticsDto } from '../players/players.dto';
 
@@ -18,7 +18,7 @@ export class CrawlerService {
     constructor(
         private readonly httpService: HttpService,
         private readonly newsService: NewsService,
-        private readonly standingsService: StandingsService,
+        private readonly teamsService: TeamsService,
         private readonly playersService: PlayersService
     ) {}
 
@@ -123,34 +123,85 @@ export class CrawlerService {
     }
 
     @Cron(CronExpression.EVERY_DAY_AT_10AM)
-    async fetchStandings() {
+    async fetchTeamInfo() {
+        const teamCode: { [key: string]: number } = {
+            '勇士': 1,
+            '領航猿': 2,
+            '攻城獅': 3,
+            '夢想家': 4,
+            '鋼鐵人': 5,
+            '國王': 6,
+        };
+        
         try {
             const response = await firstValueFrom(this.httpService.get(`${process.env.PLG_URL}/standings`));
             const $ = cheerio.load(response.data);
             const rankingData = $('.team_ranking').find('tbody');
-            rankingData.children().map(async (index, element) => {
+            rankingData.children().map(async (_, element) => {
                 const teamRankData = $(element).text().trim().split(/\n|(?=P)/).map(item => item.trim()).filter(item => item);
-                const standingsDto = new UpdateStandingsDto();
+                const teamDto = new TeamDto();
+                teamDto.profile = new TeamProfileDto();
+                teamDto.standings = new StandingsDto();
+                teamDto.profile.introduction = new TeamIntroductionDto();
+                teamDto.profile.purchase = new PurchaseDto();
+                teamDto.profile.facility = new FacilityDto();
                 // load data into standingsDto
-                standingsDto.rank = parseInt(teamRankData[0], 10);
-                standingsDto.team = teamRankData[1];
-                standingsDto.gamesPlayed = parseInt(teamRankData[2], 10);
-                standingsDto.win = parseInt(teamRankData[3], 10);
-                standingsDto.loss = parseInt(teamRankData[4], 10);
-                standingsDto.winRate = teamRankData[5];
-                standingsDto.gamesBehind = parseInt(teamRankData[6], 10);
-                standingsDto.winStreak = teamRankData[7];
-                standingsDto.againstPilots = teamRankData[8];
-                standingsDto.againstDreamers = teamRankData[9];
-                standingsDto.againstKings = teamRankData[10];
-                standingsDto.againstLioneers = teamRankData[11];
-                standingsDto.againstBraves = teamRankData[12];
-                standingsDto.againstSteelers = teamRankData[13];
+                teamDto.standings.rank = parseInt(teamRankData[0], 10);
+                teamDto.standings.gamesPlayed = parseInt(teamRankData[2], 10);
+                teamDto.standings.win = parseInt(teamRankData[3], 10);
+                teamDto.standings.loss = parseInt(teamRankData[4], 10);
+                teamDto.standings.winRate = teamRankData[5];
+                teamDto.standings.gamesBehind = parseInt(teamRankData[6], 10);
+                teamDto.standings.winStreak = teamRankData[7];
+                teamDto.standings.againstPilots = teamRankData[8];
+                teamDto.standings.againstDreamers = teamRankData[9];
+                teamDto.standings.againstKings = teamRankData[10];
+                teamDto.standings.againstLioneers = teamRankData[11];
+                teamDto.standings.againstBraves = teamRankData[12];
+                teamDto.standings.againstSteelers = teamRankData[13];
                 // update new standings into database
-                this.standingsService.updateStandings(standingsDto);
+                teamDto.profile.team = teamRankData[1];
+                teamDto.profile.introduction.coreValues = '';
+                teamDto.profile.introduction.brandStory = '';
+                teamDto.profile.introduction.officialName = '';
+                teamDto.profile.introduction.establishmentDate = '';
+                const profileResponse = await firstValueFrom(this.httpService.get(`${process.env.PLG_URL}/team/${teamCode[teamDto.profile.team]}`));
+                const profile = cheerio.load(profileResponse.data);
+                let status = 0;
+                profile('.team_intro').text().trim().split('\n').map(item => item.trim())
+                .filter(item => item).forEach(item => {
+                    if (item === '核心理念') {
+                        status = 1;
+                    } else if (item === '品牌故事') {
+                        status = 2;
+                    } else if (item === '正式名稱') {
+                        status = 3;
+                    } else if (item === '成立時間') {
+                        status = 4;
+                    } else if (status === 1) {
+                        teamDto.profile.introduction.coreValues += (item + '\n');
+                    } else if (status === 2) {
+                        teamDto.profile.introduction.brandStory += (item + '\n');
+                    } else if (status === 3) {
+                        teamDto.profile.introduction.officialName += (item + '\n');
+                    } else if (status === 4) {
+                        teamDto.profile.introduction.establishmentDate += (item + '\n');
+                        status = 5;
+                    }
+                }) 
+                teamDto.profile.purchase.instruction = profile('.fs14.text-black:eq(3)').text().trim();
+                teamDto.profile.purchase.link = profile('#goto_buy_ticket').attr('href');
+                teamDto.profile.facility.name = profile('.text-black.fs16:eq(3)').text().trim();
+                teamDto.profile.facility.address = profile('.gym_detail:eq(0)').text();
+                teamDto.profile.facility.contact = profile('.gym_detail:eq(1)').text();
+                teamDto.profile.playerList = [];
+                profile('.player_list').find('.fs16.text_strong').contents().filter((_, el) => el.type === 'text').map((_, el) => {
+                    teamDto.profile.playerList.push(profile(el).text().split(' ')[0]);
+                })
+                this.teamsService.updateTeamInfo(teamDto);
             })
         } catch (error) {
-            console.error('Error occurred while crawling standings data:', error);
+            console.error('Error occurred while crawling teams data:', error);
         }
     }
 

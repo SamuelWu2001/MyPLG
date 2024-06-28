@@ -85,6 +85,10 @@ export class FacilityDto {
     @IsString()
     @IsNotEmpty()
     address: string;
+
+    @IsString()
+    @IsNotEmpty()
+    contact: string;
 }
 
 export class PurchaseDto {
