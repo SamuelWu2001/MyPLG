@@ -73,6 +73,9 @@ export class Facility extends Document {
 
     @Prop({ required: true })
     address: string;
+    
+    @Prop({ required: true })
+    contact: string;
 }
 
 @Schema()
