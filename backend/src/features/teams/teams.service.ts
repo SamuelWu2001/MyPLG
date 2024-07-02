@@ -7,7 +7,7 @@ import { TeamDto } from './teams.dto';
 @Injectable()
 export class TeamsService {
     constructor(@InjectModel(Team.name) private readonly teamModel: Model<Team>) {}
-
+    
     async updateTeamInfo( teamDto: TeamDto) {
         return this.teamModel.findOneAndUpdate(
             {
@@ -21,7 +21,7 @@ export class TeamsService {
     async getStandingData(): Promise<Team[]> {
         return this.teamModel.find().select({
             'profile.team': 1,
-            'standing': 1,
+            'standings': 1,
         }).exec();
     }
 
