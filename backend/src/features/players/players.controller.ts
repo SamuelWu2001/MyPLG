@@ -3,7 +3,7 @@ import { PlayersService } from './players.service';
 import { Player } from './players.model';
 import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 
-@ApiTags('players')
+@ApiTags('Players')
 @Controller('players')
 export class PlayersController {
     constructor(private readonly playersService: PlayersService) {}

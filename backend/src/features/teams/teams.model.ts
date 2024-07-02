@@ -101,7 +101,7 @@ export class TeamProfile extends Document {
 @Schema()
 export class Team extends Document {
   @Prop({ type: Standings, required: true })
-  standing: Standings;
+  standings: Standings;
 
   @Prop({ type: TeamProfile, required: true })
   profile: TeamProfile;
