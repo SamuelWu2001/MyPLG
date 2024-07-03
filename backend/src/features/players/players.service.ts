@@ -35,4 +35,12 @@ export class PlayersService {
         .select({'profile': 1,})
         .exec();
     }
+
+    
+    async getProfileDataByTeam(teamName: string): Promise<Player[]> {
+        return this.playersModel
+        .find({ 'profile.team': teamName })
+        .select({'profile': 1,})
+        .exec();
+    }
 }

@@ -21,4 +21,11 @@ export class PlayersController {
     async getProfileData(@Param('playerName') playerName: string): Promise<Player[]> {
         return this.playersService.getProfileData(playerName);
     }
+
+    @ApiOperation({ summary: 'Get player profile data from a certain team' })
+    @ApiResponse({ status: 201, description: 'Return player profile data from a certain team' })
+    @Get('profile/team/:teamName')
+    async getProfileDataByTeam(@Param('teamName') teamName: string): Promise<Player[]> {
+        return this.playersService.getProfileDataByTeam(teamName);
+    }
 }
