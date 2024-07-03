@@ -16,22 +16,22 @@ const Standings = () => {
   useEffect(() => {
     const fetchStandingsData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/standings`);
+        const response = await axios.get(`${API_URL}/teams/standings`);
         const initialData = response.data.map((item) => [
-            item.rank,
-            item.team,
-            item.gamesPlayed,
-            item.win,
-            item.loss, 
-            item.winRate,
-            item.gamesBehind,
-            item.winStreak,
-            item.againstPilots,
-            item.againstDreamers,
-            item.againstKings,
-            item.againstLioneers,
-            item.againstBraves,
-            item.againstSteelers
+            item.standings.rank,
+            item.profile.team,
+            item.standings.gamesPlayed,
+            item.standings.win,
+            item.standings.loss, 
+            item.standings.winRate,
+            item.standings.gamesBehind,
+            item.standings.winStreak,
+            item.standings.againstPilots,
+            item.standings.againstDreamers,
+            item.standings.againstKings,
+            item.standings.againstLioneers,
+            item.standings.againstBraves,
+            item.standings.againstSteelers
         ]);
         setStandingsData(initialData);
       } catch (error) {  
@@ -64,6 +64,7 @@ const Standings = () => {
 const styles = StyleSheet.create({
     table: {
         padding: 10,
+        flex: 1,
     },
     topBar: {
         flexDirection: 'row',
