@@ -14,10 +14,8 @@ const PlayerProfile = ({ route }) => {
 
   useEffect(() => {
     const getProfileData = async () => {
-      console.log('playerName', playerName);
       try {
         const response = await axios.get(`${API_URL}/players/profile/${playerName}`);
-        console.log(response.data[0].profile);
         setPlayerProfile(response.data[0].profile);
       } catch (error) {
         console.error('Error fetching profile:', error);
@@ -26,7 +24,6 @@ const PlayerProfile = ({ route }) => {
 
     getProfileData();
   }, []);
-  console.log('playerProfile.education', playerProfile.imgUrl);
   return (
     <ScrollView style={styles.container}>
        <View style={styles.profileContainer}>

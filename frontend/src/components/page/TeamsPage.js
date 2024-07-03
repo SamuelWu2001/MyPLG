@@ -1,28 +1,20 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, Text, View, ScrollView } from 'react-native';
-import FontAwesome6Icon from 'react-native-vector-icons/FontAwesome6';
-import IoniconsIcon from 'react-native-vector-icons/Ionicons';
+import { createStackNavigator } from '@react-navigation/stack';
+import { StyleSheet, TouchableOpacity, Text, Image, View, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native'
+import TeamProfile from './TeamProfile';
+import images from '../../../assets/images/image';
 
-const Icon = ({type, name, ...props}) => {
-  switch (type) {
-    case 'FontAwesome6':
-      return <FontAwesome6Icon name={name} {...props} />;
-    case 'Ionicons':
-      return <IoniconsIcon name={name} {...props} />;
-    default:
-      return null;
-  }
-};
+const TeamStack = createStackNavigator();
 
-const StatisticDataList = () => {
+const TeamsOverview = () => {
     const data = [
-        { id: '1', title: '綜合排行', iconType: 'FontAwesome6', iconName: 'ranking-star', route: '' },
-        { id: '2', title: '球隊戰績', iconType: 'Ionicons', iconName: 'stats-chart', route: 'Standings' },
-        { id: '3', title: '球員數據', iconType: 'Ionicons', iconName: 'person', route: 'Player' },
-        { id: '4', title: '球隊介紹', iconType: 'FontAwesome6', iconName: 'people-group', route: 'Teams' },
-        { id: '5', title: '特殊表現', iconType: 'Ionicons', iconName: 'star', route: '' },
-        { id: '6', title: 'Hot Zone', iconType: 'FontAwesome6', iconName: 'chart-pie', route: '' },
+        { id: '1', title: '勇士', imageUri: images.bravesLogo, color: '#0080FF' },
+        { id: '2', title: '國王', imageUri: images.kingsLogo, color: '#FFD306' },
+        { id: '3', title: '領航猿', imageUri: images.pilotsLogo, color: '#FF8000' },
+        { id: '4', title: '攻城獅', imageUri: images.lioneersLogo, color: '#6F00D2' },
+        { id: '5', title: '夢想家', imageUri: images.dreamersLogo, color: '#82D900' },
+        { id: '6', title: '鋼鐵人', imageUri: images.steelersLogo, color: '#FF2D2D' },
     ];
 
     const navigation = useNavigation();
@@ -38,9 +30,9 @@ const StatisticDataList = () => {
                     <View key={index} style={styles.boxWrapper}>
                       <TouchableOpacity 
                         style={styles.box}
-                        onPress={() => navigation.navigate(item.route)}
+                        onPress={() => navigation.navigate('TeamProfile', { team: item })}
                       >
-                        <Icon type={item.iconType} name={item.iconName} size={40} color="#000" />
+                        <Image source={item.imageUri} style={styles.boxImage}/>
                         <Text style={styles.boxText}>{item.title}</Text>
                       </TouchableOpacity>
                     </View>
@@ -51,13 +43,23 @@ const StatisticDataList = () => {
 
     return (
         <View style={styles.container}>
-          <Text style={styles.title}> Discover </Text>
+          <Text style={styles.title}> 球隊介紹 </Text>
           <ScrollView style={ styles.scrollView }>{
             Array.from({ length: Math.ceil(data.length / 2) }).map((_, index) => renderRow(index))}
           </ScrollView>
         </View>
     );
 };
+
+export default function TeamsPage() {
+    return (
+      <TeamStack.Navigator screenOptions={{ headerShown: false }}>
+        <TeamStack.Screen name="TeamsOverview" component={ TeamsOverview }/>
+        <TeamStack.Screen name="TeamProfile" component={ TeamProfile }/>
+      </TeamStack.Navigator>
+    )
+};
+
 
 const styles = StyleSheet.create({
     container: {
@@ -99,6 +101,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginTop: 10,
     },
+    boxImage: {
+        width: 100,
+        height: 100,
+        resizeMode: 'contain',
+    },
 });
-
-export default StatisticDataList;
