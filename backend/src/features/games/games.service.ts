@@ -10,13 +10,20 @@ export class GamesService {
     constructor(@InjectModel(Game.name) private readonly gameModel: Model<Game>) {}
 
     async updateGameInfo( gameDto: GameDto) {
-        return this.gameModel.findOneAndUpdate(
-            { 
-                'profile.gameID': gameDto.profile.gameID, 
-            }, 
-            gameDto,
-            { new: true, upsert: true }
-        ).exec();
+        const filter = { 'profile.gameID': gameDto.profile.gameID };
+        const options = { new: true, upsert: true };
+
+        const existingDoc = await this.gameModel.findOne(filter);
+
+        if (existingDoc) {
+            if (existingDoc.profile.status !== '已完賽') {
+                return this.gameModel.findOneAndUpdate(filter, gameDto, options).exec();
+            } else {
+                return existingDoc;
+            }
+        } else {
+            return this.gameModel.create(gameDto);
+        }
     }
 
     async getDataByGameID(gameID: string): Promise<Game> {

@@ -47,7 +47,7 @@ dotenv.config({ path: 'development.env'});
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
-    } 
+    }
   ],
 })
 export class AppModule {}
