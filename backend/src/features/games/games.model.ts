@@ -76,7 +76,19 @@ export class GameProfile extends Document {
     home: string;
 
     @Prop({ required: true })
+    home_EN: string;
+
+    @Prop({ required: true })
+    homeScore: string;
+
+    @Prop({ required: true })
     away: string;
+
+    @Prop({ required: true })
+    away_EN: string;
+
+    @Prop({ required: true })
+    awayScore: string;
 
     @Prop({ required: true })
     gameID: string;
@@ -100,19 +112,19 @@ export class GameProfile extends Document {
     boxScore: string[][];
 }
 
+export const GameProfileSchema = SchemaFactory.createForClass(GameProfile);
 
 @Schema()
 export class Game extends Document {
-    @Prop({ type: GameProfile, required: true })
+    @Prop({ type: GameProfileSchema, required: true })
     profile: GameProfile;
    
-    @Prop({ type: StatisticsPerGame, required: true })
-    homeStatistic: StatisticsPerGame;
+    @Prop({ type: [StatisticsPerGame] })
+    homeStatistic: StatisticsPerGame[];
   
-    @Prop({ type: StatisticsPerGame, required: true })
-    awayStatistic: StatisticsPerGame;
+    @Prop({ type: [StatisticsPerGame] })
+    awayStatistic: StatisticsPerGame[];
 }
 
-export const GameProfileSchema = SchemaFactory.createForClass(GameProfile);
 export const StatisticsPerGameSchema = SchemaFactory.createForClass(StatisticsPerGame);
 export const GameSchema = SchemaFactory.createForClass(Game);

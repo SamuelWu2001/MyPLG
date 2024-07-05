@@ -6,6 +6,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { NewsModule } from '../news/news.module';
 import { TeamsModule } from '../teams/teams.module';
 import { PlayersModule } from '../players/players.module';
+import { GamesModule } from '../games/games.module';
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { PlayersModule } from '../players/players.module';
     ScheduleModule.forRoot(),
     NewsModule,
     TeamsModule,
-    PlayersModule
+    PlayersModule,
+    GamesModule
   ],
   controllers: [CrawlerController],
   providers: [CrawlerService]

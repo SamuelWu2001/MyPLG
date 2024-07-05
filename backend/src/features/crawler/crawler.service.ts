@@ -8,9 +8,11 @@ import { v4 as uuidv4 } from 'uuid';
 import { NewsService } from '../news/news.service';
 import { CreateNewsDto } from '../news/news.dto';
 import { TeamsService } from '../teams/teams.service';
+import { GamesService } from '../games/games.service';
 import { TeamDto, StandingsDto, TeamProfileDto, TeamIntroductionDto, PurchaseDto, FacilityDto } from '../teams/teams.dto';
 import { PlayersService } from '../players/players.service';
 import { UpdatePlayerDto, PlayerProfileDto, PlayerStatisticsDto } from '../players/players.dto';
+import { GameDto, StatisticsPerGameDto, GameProfileDto } from '../games/games.dto';
 
 
 @Injectable()
@@ -19,8 +21,64 @@ export class CrawlerService {
         private readonly httpService: HttpService,
         private readonly newsService: NewsService,
         private readonly teamsService: TeamsService,
-        private readonly playersService: PlayersService
+        private readonly playersService: PlayersService,
+        private readonly gamesService: GamesService,
     ) {}
+    
+    @Cron(CronExpression.EVERY_DAY_AT_10AM)
+    async fetchGameInfo() {
+        await this.getGameInfo('例行賽', 'schedule-regular-season'); 
+        await this.getGameInfo('季後賽', 'schedule-playoffs'); 
+        await this.getGameInfo('總冠軍賽', 'schedule-finals'); 
+    }
+
+    async getGameInfo(gameType: string, url: string) {
+        try {
+            const response = await firstValueFrom(this.httpService.get(`${process.env.PLG_URL}/${url}/2023-24`));
+            const $ = cheerio.load(response.data);
+            const gameData = $('.match_row');
+            gameData.children().map(async(_, element) => {
+                const statisticURL = $(element).find('.d-md-block').attr('href');
+                const statisticResponse = await firstValueFrom(this.httpService.get(`${process.env.PLG_URL}${statisticURL}`));
+                const statisticData = cheerio.load(statisticResponse.data);
+
+                const gameInfoData = $(element).text().trim().split('\n').map(item => item.trim()).filter(item => item);
+                const boxScoreData = statisticData('.match_table').children().eq(0).text().trim().split('\n').map(item => item.trim()).filter(item => item);
+                const additionalData = statisticData('.match_table').children().eq(1).text().trim().split('\n').map(item => item.trim()).filter(item => item)
+                boxScoreData.push(...additionalData);
+
+                const gameDto = new GameDto();
+                gameDto.profile = new GameProfileDto();
+                // profile
+                gameDto.profile.gameDate = gameInfoData[0] + ' ' + gameInfoData[1];
+                gameDto.profile.gameTime = gameInfoData[2];
+                gameDto.profile.away = gameInfoData[4].slice(gameInfoData[4].length/2);
+                gameDto.profile.away_EN = gameInfoData[5];
+                gameDto.profile.awayScore = gameInfoData[6].slice(gameInfoData[6].length/2);
+                gameDto.profile.gameID = gameInfoData[7];
+                gameDto.profile.stadium = gameInfoData[8];
+                gameDto.profile.homeScore = gameInfoData[11].slice(gameInfoData[11].length/2);
+                gameDto.profile.home = gameInfoData[13].slice(gameInfoData[13].length/2);
+                gameDto.profile.home_EN = gameInfoData[14];
+                gameDto.profile.type = gameType;
+                gameDto.profile.status = boxScoreData[0];
+                gameDto.profile.boxScore = [
+                    [boxScoreData[1], boxScoreData[3]], 
+                    [boxScoreData[4], boxScoreData[6]], 
+                    [boxScoreData[7], boxScoreData[9]], 
+                    [boxScoreData[10], boxScoreData[12]], 
+                    [boxScoreData[13], boxScoreData[15]]
+                ];
+                // awayStatistic
+                gameDto.awayStatistic = [];
+                // homeStatistic
+                gameDto.homeStatistic = [];
+                this.gamesService.updateGameInfo(gameDto);
+            })
+        } catch (error) {
+            console.error('Error occurred while crawling game info data:', error);
+        }
+    }
 
     @Cron(CronExpression.EVERY_DAY_AT_10AM)
     async fetchPlayerInfo() {

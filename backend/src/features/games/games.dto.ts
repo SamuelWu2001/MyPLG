@@ -98,7 +98,23 @@ export class GameProfileDto {
 
     @IsString()
     @IsNotEmpty()
+    home_EN: string;
+
+    @IsString()
+    @IsNotEmpty()
+    homeScore: string;
+
+    @IsString()
+    @IsNotEmpty()
     away: string;
+
+    @IsString()
+    @IsNotEmpty()
+    away_EN: string;
+
+    @IsString()
+    @IsNotEmpty()
+    awayScore: string;
 
     @IsString()
     @IsNotEmpty()
@@ -136,13 +152,13 @@ export class GameDto {
     @Type(() => GameProfileDto)
     profile: GameProfileDto;
 
-    @IsObject()
+    @IsArray()
     @ValidateNested()
     @Type(() => StatisticsPerGameDto)
-    homeStatistic: StatisticsPerGameDto;
+    homeStatistic: StatisticsPerGameDto[];
 
-    @IsObject()
+    @IsArray()
     @ValidateNested()
     @Type(() => StatisticsPerGameDto)
-    awayStatistic: StatisticsPerGameDto;
+    awayStatistic: StatisticsPerGameDto[];
 }
