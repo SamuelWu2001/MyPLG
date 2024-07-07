@@ -1,28 +1,19 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { StatusBar } from 'react-native';
-import IconButton from '../atom/IconButton';
-import commonStyles from '../../../styles';
+import { createStackNavigator } from '@react-navigation/stack';
+import GameInfo from './GameInfo';
+import GameList from './GameList';
 
-export default function GamePage() {
-    const handlePress = () => {
-      console.log('calendar pressed!');
-    };
+const GameStack = createStackNavigator();
 
-    return (
-        <>
-          <View style={commonStyles.topBar}>
-            <Text style={styles.title}> Games </Text>
-            <IconButton iconName="calendar" onPress={handlePress} size={37} />
-          </View>
-        </>
-    );
+export default function GamePage () {
+  return (
+    <GameStack.Navigator screenOptions={{ headerShown: false }}>
+        <GameStack.Screen name="GameList" component={ GameList } />
+        <GameStack.Screen 
+          name="GameInfo" 
+          component={ GameInfo }
+          options={{ gestureEnabled: true }}
+        />
+    </GameStack.Navigator>
+  );
 };
-
-
-const styles = StyleSheet.create({
-    title: {
-      color: "black",
-      fontSize: 25, 
-    }
-});
