@@ -38,4 +38,10 @@ export class GamesService {
         .select({'profile': 1,})
         .exec();
     }
+
+    async getDataByDate(date: string): Promise<Game[]> {
+        return this.gameModel
+        .find({ 'profile.gameDate': date })
+        .exec();
+    }
 }

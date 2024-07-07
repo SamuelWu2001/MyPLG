@@ -108,6 +108,12 @@ export class GameProfile extends Document {
     @Prop({ required: true })
     status: string;
 
+    @Prop()
+    streamLink?: string;
+
+    @Prop()
+    streamLink_EN?: string;
+
     @Prop({ required: true })
     boxScore: string[][];
 }

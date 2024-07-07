@@ -140,6 +140,12 @@ export class GameProfileDto {
     @IsString()
     @IsNotEmpty()
     status: string;
+    
+    @IsString()
+    streamLink?: string;
+
+    @IsString()
+    streamLink_EN?: string;
 
     @IsArray()
     @IsNotEmpty()
