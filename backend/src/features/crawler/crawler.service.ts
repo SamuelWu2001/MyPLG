@@ -46,7 +46,11 @@ export class CrawlerService {
                 const boxScoreData = statisticData('.match_table').children().eq(0).text().trim().split('\n').map(item => item.trim()).filter(item => item);
                 const additionalData = statisticData('.match_table').children().eq(1).text().trim().split('\n').map(item => item.trim()).filter(item => item)
                 boxScoreData.push(...additionalData);
-
+                const streamLink = [];
+                statisticData('.colorBB986C').each(function() {
+                    streamLink.push($(this).attr('href'));
+                });
+                
                 const gameDto = new GameDto();
                 gameDto.profile = new GameProfileDto();
                 // profile
@@ -62,6 +66,8 @@ export class CrawlerService {
                 gameDto.profile.home_EN = gameInfoData[14];
                 gameDto.profile.type = gameType;
                 gameDto.profile.status = boxScoreData[0];
+                gameDto.profile.streamLink = streamLink.length?streamLink[0]:'';
+                gameDto.profile.streamLink_EN = streamLink.length?streamLink[1]:'';
                 gameDto.profile.boxScore = [
                     [boxScoreData[1], boxScoreData[3]], 
                     [boxScoreData[4], boxScoreData[6]], 
