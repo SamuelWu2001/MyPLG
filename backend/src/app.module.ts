@@ -13,6 +13,8 @@ import { CrawlerModule } from './features/crawler/crawler.module';
 import { PlayersModule } from './features/players/players.module';
 import { TeamsModule } from './features/teams/teams.module';
 import { GamesModule } from './features/games/games.module';
+import { UserModule } from './features/user/user.module';
+import { AuthModule } from './features/auth/auth.module';
 
 
 dotenv.config({ path: 'development.env'});
@@ -40,6 +42,8 @@ dotenv.config({ path: 'development.env'});
     PlayersModule,
     TeamsModule,
     GamesModule,
+    UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [
