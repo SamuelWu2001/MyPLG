@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView } from 'react-native';
 import { Card } from 'react-native-elements';
-import axios from 'axios';
+import axiosJWT from '../../utils/axiosJWT';
 import getEnvVars from '../../../config';
 
 const { API_URL } = getEnvVars(process.env.NODE_ENV);
@@ -15,7 +15,7 @@ const PlayerProfile = ({ route }) => {
   useEffect(() => {
     const getProfileData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/players/profile/${playerName}`);
+        const response = await axiosJWT.get(`${API_URL}/players/profile/${playerName}`);
         setPlayerProfile(response.data[0].profile);
       } catch (error) {
         console.error('Error fetching profile:', error);

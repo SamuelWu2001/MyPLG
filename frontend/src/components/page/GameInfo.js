@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'rea
 import images from '../../../assets/images/image';
 import SortTable from '../molecule/SortTable';
 import getEnvVars from '../../../config';
-import axios from 'axios';
+import axiosJWT from '../../utils/axiosJWT';
 import * as Linking from 'expo-linking';
 
 const { API_URL } = getEnvVars(process.env.NODE_ENV);
@@ -36,7 +36,7 @@ const GameInfo = ({ route }) => {
   useEffect(() => {
       const fetchGames = async (gameID) => {
         try {
-          const response = await axios.get(`${API_URL}/games/${gameID}`);
+          const response = await axiosJWT.get(`${API_URL}/games/${gameID}`);
           setGameData(response.data);
         } catch (error) {
           console.error('Error fetching game info:', error);

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import SearchTable from '../molecule/SearchTable';
 import getEnvVars from '../../../config';
-import axios from 'axios';
+import axiosJWT from '../../utils/axiosJWT';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -17,7 +17,7 @@ const PlayerStatistic = () => {
   useEffect(() => {
     const fetchPlayerData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/players/statistic`);
+        const response = await axiosJWT.get(`${API_URL}/players/statistic`);
         const initialData = response.data.map((item, _) => [
           item.profile.playerName, 
           item.profile.jerseyNumber, 

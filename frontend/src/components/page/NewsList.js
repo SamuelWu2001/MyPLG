@@ -4,7 +4,7 @@ import IconButton from '../atom/IconButton';
 import commonStyles from '../../../styles';
 import NewsCard from '../molecule/NewsCard';
 import { useNavigation } from '@react-navigation/native';
-import axios from 'axios';
+import axiosJWT from '../../utils/axiosJWT';
 import getEnvVars from '../../../config';
 
 const { API_URL } = getEnvVars(process.env.NODE_ENV);
@@ -21,7 +21,7 @@ const NewsList = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await axios.get(`${API_URL}/news`);
+        const response = await axiosJWT.get(`${API_URL}/news`);
         setNewsListData(response.data);
       } catch (error) {
         console.error('Error fetching news:', error);

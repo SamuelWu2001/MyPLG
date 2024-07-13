@@ -1,6 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet } from 'react-native';
+import { Text } from 'react-native';
 import HomePage from '../page/HomePage';
 import GamePage from '../page/GamePage';
 import ChatPage from '../page/GhatPage';
