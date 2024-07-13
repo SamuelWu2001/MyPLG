@@ -7,7 +7,7 @@ import Modal from 'react-native-modal';
 import GameCard from '../molecule/GameCard';
 import moment from  'moment';
 import 'moment/locale/zh-tw';
-import axios from 'axios';
+import axiosJWT from '../../utils/axiosJWT';
 import getEnvVars from '../../../config';
 import { useNavigation } from '@react-navigation/native';
 
@@ -30,7 +30,7 @@ export default function GameList() {
     
     const fetchGames = async (date) => {
       try {
-        const response = await axios.get(`${API_URL}/games/date/${date}`);
+        const response = await axiosJWT.get(`${API_URL}/games/date/${date}`);
         setGamesListData(response.data);
       } catch (error) {
         console.error('Error fetching games:', error);

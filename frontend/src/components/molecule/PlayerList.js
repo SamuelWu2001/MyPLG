@@ -1,6 +1,6 @@
 import React, { useEffect, useState, memo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import axios from 'axios';
+import axiosJWT from '../../utils/axiosJWT';
 import getEnvVars from '../../../config';
 import PlayerCard from './PlayerCard';
 
@@ -12,7 +12,7 @@ const PlayerList = memo(({ team }) => {
   useEffect(() => {
     const fetchPlayers = async () => {
       try {
-        const response = await axios.get(`${API_URL}/players/profile/team/${team}`);
+        const response = await axiosJWT.get(`${API_URL}/players/profile/team/${team}`);
         setPlayerListData(response.data);
       } catch (error) {
         console.error('Error fetching player list:', error);

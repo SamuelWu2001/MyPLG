@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Card } from 'react-native-elements';
-import axios from 'axios';
+import axiosJWT from '../../utils/axiosJWT';
 import getEnvVars from '../../../config';
 import { LinearGradient } from 'expo-linear-gradient';
 import images from '../../../assets/images/image';
@@ -33,7 +33,7 @@ const TeamProfile = ({ route }) => {
   useEffect(() => {
     const getProfileData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/teams/profile/${team.title}`);
+        const response = await axiosJWT.get(`${API_URL}/teams/profile/${team.title}`);
         setTeamProfile(response.data[0].profile);
       } catch (error) {
         console.error('Error fetching profile:', error);

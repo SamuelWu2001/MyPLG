@@ -2,7 +2,7 @@ import React, { useEffect, useState} from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import SortTable from '../molecule/SortTable';
-import axios from 'axios';
+import axiosJWT from '../../utils/axiosJWT';
 import getEnvVars from '../../../config';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -16,7 +16,7 @@ const Standings = () => {
   useEffect(() => {
     const fetchStandingsData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/teams/standings`);
+        const response = await axiosJWT.get(`${API_URL}/teams/standings`);
         const initialData = response.data.map((item) => [
             item.standings.rank,
             item.profile.team,
