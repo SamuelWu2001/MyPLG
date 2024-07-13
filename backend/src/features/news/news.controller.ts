@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, UploadedFile, UseInterceptors, UseGuards } from '@nestjs/common';
 import { NewsService } from './news.service';
 import { News } from './news.model';
 import { CreateNewsDto } from './news.dto';
-import { ApiOperation, ApiTags, ApiResponse, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiResponse, ApiConsumes, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { MulterConfig } from 'src/config';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('news')
 @Controller('news')
@@ -13,7 +14,9 @@ export class NewsController {
 
     @ApiOperation({ summary: 'Get all news' })
     @ApiResponse({ status: 201, description: 'Return all news' })
+    @ApiBearerAuth('JWT-auth')
     @Get()
+    @UseGuards(AuthGuard('jwt'))
     async findAll(): Promise<News[]> {
         return this.newsService.findAll();
     }
@@ -21,6 +24,7 @@ export class NewsController {
     @ApiOperation({ summary: 'Create news' })
     @ApiResponse({ status: 201, description: 'The news has been successfully created.' })
     @ApiConsumes('multipart/form-data')
+    @ApiBearerAuth('JWT-auth')
     @UseInterceptors(FileInterceptor('photo', MulterConfig))
     @ApiBody({
         schema: {
@@ -35,6 +39,7 @@ export class NewsController {
         }
     })
     @Post()
+    @UseGuards(AuthGuard('jwt'))
     async create(@UploadedFile() photo: Express.Multer.File, @Body() createNewsDto: CreateNewsDto): Promise<News> { 
         const newCreateNewsDto = {
             ...createNewsDto,
