@@ -1,7 +1,7 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { PlayersService } from './players.service';
 import { Player } from './players.model';
-import { ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiTags, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('Players')
@@ -11,6 +11,7 @@ export class PlayersController {
 
     @ApiOperation({ summary: 'Get player statistic data' })
     @ApiResponse({ status: 201, description: 'Return player statistic data' })
+    @ApiBearerAuth('JWT-auth')
     @Get('statistic')
     @UseGuards(AuthGuard('jwt'))
     async getStatisticData(): Promise<Player[]> {
@@ -19,6 +20,7 @@ export class PlayersController {
 
     @ApiOperation({ summary: 'Get player profile data' })
     @ApiResponse({ status: 201, description: 'Return player profile data' })
+    @ApiBearerAuth('JWT-auth')
     @Get('profile/:playerName')
     @UseGuards(AuthGuard('jwt'))
     async getProfileData(@Param('playerName') playerName: string): Promise<Player[]> {
@@ -27,6 +29,7 @@ export class PlayersController {
 
     @ApiOperation({ summary: 'Get player profile data from a certain team' })
     @ApiResponse({ status: 201, description: 'Return player profile data from a certain team' })
+    @ApiBearerAuth('JWT-auth')
     @Get('profile/team/:teamName')
     @UseGuards(AuthGuard('jwt'))
     async getProfileDataByTeam(@Param('teamName') teamName: string): Promise<Player[]> {

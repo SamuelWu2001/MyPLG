@@ -1,9 +1,8 @@
-import { Controller, Post, Body, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDto } from './user.dto';
 import { User } from './user.model';
 import { ApiOperation, ApiTags, ApiResponse, ApiBody } from '@nestjs/swagger';
-import { AuthGuard } from '@nestjs/passport';
 
 @ApiTags('User')
 @Controller('user')
@@ -14,7 +13,6 @@ export class UserController {
     @ApiResponse({ status: 201, description: 'The user has been successfully created.' })
     @ApiBody({ type: UserDto }) 
     @Post()
-    @UseGuards(AuthGuard('jwt'))
     async signUp(@Body() user: UserDto): Promise<User> {
         const duplicatedName = await this.userService.findUser(user.userName);
         const duplicatedEmail = await this.userService.findUserByEmail(user.email);
